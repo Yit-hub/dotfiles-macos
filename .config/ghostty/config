@@ -1,0 +1,22 @@
+ font-family = Cartograph CF
+  font-size = 14
+  theme = cyberdream
+#  theme = light:Everforest Dark Hard,dark:cyberdream
+# theme = Rose Pine Moon
+  background-opacity = 0.9
+  background-blur-radius = 20
+
+#macos-icon = custom
+#macos-custom-icon = ~/.config/ghostty/icons/ayu-mirage.icns
+#background-blur-radius = 20
+mouse-hide-while-typing = true
+window-decoration = true
+
+window-padding-x = 10
+window-padding-y = 10
+window-colorspace = "display-p3"
+window-padding-balance = true
+window-save-state = always
+macos-titlebar-style = transparent
+
+term = xterm-256color

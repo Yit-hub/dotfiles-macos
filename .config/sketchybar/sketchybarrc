@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# === CONFIG ROOT ===
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+# === COLORS ===
+CLR_BG=0x00000000          # Transparent bar background
+CLR_COMP_BG=0xff1c1c1c     # Compartment background (RosePine)
+CLR_COMP_BORDER=0xff1c1c1c # Compartment border (RosePine)
+CLR_FG=0xfffaf9f6          # Foreground (RosePine)
+
+# === PADDING CONSTANTS
+BAR_PADDING=8   # Outer bar padding (use compartments for outer spacing)
+ITEM_PADDING=6  # Default horizontal padding between items
+ICON_PADDING=3  # Consistent icon inner padding (reduced from mixed 2/4 for tighter look)
+LABEL_PADDING=8 # Consistent label inner padding (unified from 4/2)
+COMP_PADDING=6  # Compartment outer padding (increased from bar-level 0 for breathing room)
+
+# === BAR (No outer padding; defer to compartments) ===
+sketchybar --bar display=all autohide=off sticky=on position=top height=32 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
+
+# === DEFAULTS (Unified paddings for all items/icons/labels) ===
+sketchybar --default \
+  padding_left="$ITEM_PADDING" \
+  padding_right="$ITEM_PADDING" \
+  icon.font="SF Pro:Semibold:14.0" \
+  label.font="SF Pro:Semibold:14.0" \
+  icon.color="$CLR_FG" \
+  label.color="$CLR_FG" \
+  icon.padding_left="$ICON_PADDING" \
+  icon.padding_right="$ICON_PADDING" \
+  label.padding_left="$LABEL_PADDING" \
+  label.padding_right="$LABEL_PADDING"
+
+# === WORKSPACES (each in its own island) ===
+sketchybar --add event aerospace_workspace_change
+LABELS=("1" "2" "3" "4" "5")
+INDEX=0
+
+for sid in $(aerospace list-workspaces --all); do
+  label="${LABELS[$INDEX]:-}"
+  item="space.$sid"
+  bracket="space_bracket.$sid"
+
+  sketchybar --add item "$item" left \
+    --subscribe "$item" aerospace_workspace_change \
+    --set "$item" \
+    background.drawing=off \
+    label="$label" \
+    icon.font="sketchybar-app-font:Regular:14.0" \
+    icon.padding_left="$ICON_PADDING" \
+    icon.padding_right="$ICON_PADDING" \
+    label.padding_left="$LABEL_PADDING" \
+    label.padding_right="$LABEL_PADDING" \
+    click_script="aerospace workspace $sid" \
+    script="$PLUGIN_DIR/aerospace.sh $sid"
+
+  sketchybar --add bracket "$bracket" "$item" \
+    --set "$bracket" \
+    background.color="$CLR_COMP_BG" \
+    background.corner_radius=8 \
+    background.height=26 \
+    background.border_color="$CLR_COMP_BORDER" \
+    background.border_width=1 \
+    background.drawing=on
+
+  ((INDEX++))
+done
+
+# === FRONT APP (own island) ===
+sketchybar --add item front_app left \
+  --set front_app \
+  script="$PLUGIN_DIR/front_app.sh" \
+  icon.font="sketchybar-app-font:Regular:14.0" \
+  label.y_offset=1 \
+  icon.padding_left="$ICON_PADDING" \
+  icon.padding_right="$ICON_PADDING" \
+  label.padding_right="$COMP_PADDING" \
+  --subscribe front_app front_app_switched
+
+sketchybar --add bracket front_app_compartment front_app \
+  --set front_app_compartment \
+  background.color="$CLR_COMP_BG" \
+  background.corner_radius=8 \
+  background.height=26 \
+  background.border_color="$CLR_COMP_BORDER" \
+  background.border_width=1 \
+  background.drawing=on
+
+# === RIGHT SIDE ITEMS ===
+sketchybar --add item clock right \
+  --set clock update_freq=10 icon=􀐫 script="$PLUGIN_DIR/clock.sh" label.padding_right="$COMP_PADDING"
+
+sketchybar --add item volume right \
+  --set volume script="$PLUGIN_DIR/volume.sh" \
+  --subscribe volume volume_change
+
+sketchybar --add item battery right \
+  --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+  --subscribe battery system_woke power_source_change
+
+sketchybar --add item net right \
+  --set net update_freq=120 icon=􀙇 script="$PLUGIN_DIR/wifi.sh"
+
+# === RIGHT COMPARTMENT ===
+sketchybar --add bracket right_compartment clock volume battery net \
+  --set right_compartment \
+  background.color="$CLR_COMP_BG" \
+  background.corner_radius=8 \
+  background.height=26 \
+  background.border_color="$CLR_COMP_BORDER" \
+  background.border_width=1 \
+  background.padding_left=0 \
+  background.drawing=on
+
+# === FINALIZE ===
+sketchybar --update
+
+# Initialize front_app with current frontmost app
+INIT_APP=$(osascript -e 'tell application "System Events" to get name of first process whose frontmost is true' 2>/dev/null)
+[ -n "$INIT_APP" ] && sketchybar --trigger front_app_switched INFO="$INIT_APP"

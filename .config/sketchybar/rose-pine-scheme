@@ -1,0 +1,6 @@
+# === COLORS ===
+CLR_BG=0x00000000          # Transparent bar background
+CLR_COMP_BG=0xff191724     # Compartment background (RosePine)
+CLR_COMP_BORDER=0xff191724 # Compartment border (RosePine)
+CLR_FG=0xffe0def4          # Foreground (RosePine)
+
