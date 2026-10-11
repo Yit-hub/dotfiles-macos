@@ -1,11 +1,12 @@
  font-family = Cartograph CF
   font-size = 14
-  theme = cyberdream
+#  theme = cyberdream
 #  theme = light:Everforest Dark Hard,dark:cyberdream
 # theme = Rose Pine Moon
   background-opacity = 0.9
   background-blur-radius = 20
 
+theme= light:Rose Pine Dawn,dark:Rose Pine Moon
 #macos-icon = custom
 #macos-custom-icon = ~/.config/ghostty/icons/ayu-mirage.icns
 #background-blur-radius = 20
