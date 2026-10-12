@@ -15,7 +15,7 @@ exec-on-workspace-change = [
 start-at-login = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
-enable-normalization-flatten-containers = false #default true
+enable-normalization-flatten-containers = false                         #default true
 enable-normalization-opposite-orientation-for-nested-containers = false #default true
 
 # See: https://nikitabobko.github.io/AeroSpace/guide#layouts
@@ -314,11 +314,13 @@ run = 'layout floating'
 if.app-id = 'com.github.wez.wezterm'
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'org.m0k.transmission'
+run = 'layout floating'
+
 [workspace-to-monitor-force-assignment]
-1 = '25G3ZM'        # Web / Navegador principal
+1 = '25G3ZM'                  # Web / Navegador principal
 2 = '25G3ZM'
-3 = '25G3ZM'        
-4 = 'Built-in Retina Display'   
-5 = 'Built-in Retina Display'   
-
-
+3 = '25G3ZM'
+4 = 'Built-in Retina Display'
+5 = 'Built-in Retina Display'
