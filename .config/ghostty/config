@@ -1,23 +1,45 @@
- font-family = Cartograph CF
-  font-size = 14
-#  theme = cyberdream
-#  theme = light:Everforest Dark Hard,dark:cyberdream
-# theme = Rose Pine Moon
-  background-opacity = 0.9
-  background-blur-radius = 20
+#####################
+##### Apparency #####
+#####################
 
+font-family = Cartograph CF
+font-size = 14
+background-opacity = 0.9
+background-blur-radius = 20
 theme= light:Rose Pine Dawn,dark:Rose Pine Moon
+mouse-hide-while-typing = true
+macos-titlebar-style = transparent
+term = xterm-256color
+#theme = light:Everforest Dark Hard,dark:cyberdream
 #macos-icon = custom
 #macos-custom-icon = ~/.config/ghostty/icons/ayu-mirage.icns
 #background-blur-radius = 20
-mouse-hide-while-typing = true
-window-decoration = true
+
+#####################
+### Windows style ###
+#####################
 
 window-padding-x = 10
+window-decoration = true
 window-padding-y = 10
 window-colorspace = "display-p3"
 window-padding-balance = true
 window-save-state = always
-macos-titlebar-style = transparent
 
-term = xterm-256color
+#####################
+##### Keybinds ######
+#####################
+macos-option-as-alt = left
+keybind = cmd+k=clear_screen
+#Split
+keybind = alt+v=new_split:right
+keybind = alt+d=new_split:down
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+h=goto_split:left
+keybind = alt+l=goto_split:right
+# Split Resize
+keybind = ctrl+shift+j=resize_split:up,10
+keybind = ctrl+shift+k=resize_split:down,10
+keybind = ctrl+shift+h=resize_split:left,10
+keybind = ctrl+shift+l=resize_split:right,10
