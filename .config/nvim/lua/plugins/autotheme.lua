@@ -11,7 +11,7 @@ return {
         migrations = true,
       },
       styles = {
-        transparency = false,
+        transparency = true,
       },
     },
   },
