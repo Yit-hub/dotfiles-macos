@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-source "$HOME/.config/sketchybar/helpers/icon_map.sh"
+APP_ICON="$HOME/.config/sketchybar/helpers/app_icon.py"
 
 if [ "$SENDER" = "front_app_switched" ]; then
   APP="$INFO"
-  __icon_map "$APP"
-  sketchybar --set "$NAME" icon="$icon_result" label="$APP"
+  ICON=$(python3 "$APP_ICON" "$APP" 2>/dev/null)
+  sketchybar --set "$NAME" icon="$ICON" label="$APP"
 fi

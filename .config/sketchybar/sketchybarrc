@@ -4,6 +4,10 @@
 CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
+# App icons are resolved straight from the sketchybar-app-font's own metadata
+# (helpers/app_icon.py), so they always match the installed font version.
+# Update the font and icon map with: "$CONFIG_DIR/update_app_font.sh"
+
 # === COLORS ===
 CLR_BG=0x00000000          # Transparent bar background
 CLR_COMP_BG=0xff1c1c1c     # Compartment background (RosePine)
@@ -18,7 +22,7 @@ LABEL_PADDING=8 # Consistent label inner padding (unified from 4/2)
 COMP_PADDING=6  # Compartment outer padding (increased from bar-level 0 for breathing room)
 
 # === BAR (No outer padding; defer to compartments) ===
-sketchybar --bar display=all autohide=off sticky=on position=top height=32 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
+sketchybar --bar display=all autohide=off sticky=off position=top height=32 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
 
 # === DEFAULTS (Unified paddings for all items/icons/labels) ===
 sketchybar --default \
@@ -44,7 +48,7 @@ for sid in $(aerospace list-workspaces --all); do
   bracket="space_bracket.$sid"
 
   sketchybar --add item "$item" left \
-    --subscribe "$item" aerospace_workspace_change \
+    --subscribe "$item" aerospace_workspace_change front_app_switched \
     --set "$item" \
     background.drawing=off \
     label="$label" \
@@ -116,6 +120,10 @@ sketchybar --add bracket right_compartment clock volume battery net \
 
 # === FINALIZE ===
 sketchybar --update
+
+# Initialize workspace icons (otherwise they stay empty until the first switch)
+FOCUSED_WS=$(aerospace list-workspaces --focused 2>/dev/null)
+[ -n "$FOCUSED_WS" ] && sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED_WS"
 
 # Initialize front_app with current frontmost app
 INIT_APP=$(osascript -e 'tell application "System Events" to get name of first process whose frontmost is true' 2>/dev/null)
