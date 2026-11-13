@@ -12,11 +12,20 @@ exec-on-workspace-change = [
   '-c',
   'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
 ]
+
+# Notify Sketchybar about window focus changes as well.
+# `exec-on-workspace-change` only fires when the *focused workspace* changes, so
+# moving a window to another workspace (which keeps the current workspace
+# focused) would otherwise leave the bar stale until the next workspace switch.
+# `on-focus-changed` also covers windows being moved, opened, closed or
+# re-focused. The plugin derives FOCUSED_WORKSPACE itself when it isn't passed.
+on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
 # Start AeroSpace at login
-start-at-login = false
+start-at-login = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
-enable-normalization-flatten-containers = false                         #default true
+enable-normalization-flatten-containers = false #default true
 enable-normalization-opposite-orientation-for-nested-containers = false #default true
 
 # See: https://nikitabobko.github.io/AeroSpace/guide#layouts
@@ -153,11 +162,13 @@ ctrl-5 = 'workspace 5'
 # ctrl-z = 'workspace Z'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-ctrl-shift-1 = 'move-node-to-workspace 1'
-ctrl-shift-2 = 'move-node-to-workspace 2'
-ctrl-shift-3 = 'move-node-to-workspace 3'
-ctrl-shift-4 = 'move-node-to-workspace 4'
-ctrl-shift-5 = 'move-node-to-workspace 5'
+# `--focus-follows-window` switches the focused workspace to the destination, so
+# the bar (and the visible workspace) follows the window you just moved.
+ctrl-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+ctrl-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+ctrl-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+ctrl-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+ctrl-shift-5 = 'move-node-to-workspace --focus-follows-window 5'
 #ctrl-shift-6 = 'move-node-to-workspace 6'
 #ctrl-shift-7 = 'move-node-to-workspace 7'
 #ctrl-shift-8 = 'move-node-to-workspace 8'
@@ -200,10 +211,7 @@ ctrl-shift-comma = 'mode service'
 [mode.service.binding]
 esc = ['reload-config', 'mode main']
 r = ['flatten-workspace-tree', 'mode main'] # reset layout
-f = [
-  'layout floating tiling',
-  'mode main',
-] # Toggle between floating and tiling layout
+f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
@@ -324,7 +332,7 @@ if.app-id = 'dev.alexandremadeira.kitsune'
 run = 'layout floating'
 
 [workspace-to-monitor-force-assignment]
-1 = '25G3ZM'                  # Web / Navegador principal
+1 = '25G3ZM' # Web / Navegador principal
 2 = '25G3ZM'
 3 = '25G3ZM'
 4 = 'Built-in Retina Display'
