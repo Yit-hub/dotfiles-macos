@@ -1,5 +1,23 @@
 #!/bin/sh
 
+# Clicking the item toggles its label between the battery percentage and
+# icon-only. The state is kept in a marker file so it survives script
+# invocations (updates) and sketchybar restarts.
+STATE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sketchybar"
+STATE_FILE="$STATE_DIR/battery_label_hidden"
+
+case "$1" in
+toggle)
+  NAME="${2:-$NAME}"
+  if [ -f "$STATE_FILE" ]; then
+    rm -f "$STATE_FILE"
+  else
+    mkdir -p "$STATE_DIR"
+    : >"$STATE_FILE"
+  fi
+  ;;
+esac
+
 PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
 CHARGING="$(pmset -g batt | grep 'AC Power')"
 
@@ -23,10 +41,14 @@ case "${PERCENTAGE}" in
 *) ICON="􀛪" ;;
 esac
 
-if [[ "$CHARGING" != "" ]]; then
+if [ "$CHARGING" != "" ]; then
   ICON="􀋦"
 fi
 
 # The item invoking this script (name $NAME) will get its icon and label
 # updated with the current battery status
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+if [ -f "$STATE_FILE" ]; then
+  sketchybar --set "$NAME" icon="$ICON" label.drawing=off
+else
+  sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%" label.drawing=on
+fi

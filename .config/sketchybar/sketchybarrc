@@ -22,7 +22,7 @@ LABEL_PADDING=8 # Consistent label inner padding (unified from 4/2)
 COMP_PADDING=6  # Compartment outer padding (increased from bar-level 0 for breathing room)
 
 # === BAR (No outer padding; defer to compartments) ===
-sketchybar --bar display=all autohide=off sticky=off position=top height=32 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
+sketchybar --bar display=all autohide=off sticky=on position=top height=32 blur_radius=0 color="$CLR_BG" padding_left="$BAR_PADDING" padding_right="$BAR_PADDING"
 
 # === DEFAULTS (Unified paddings for all items/icons/labels) ===
 sketchybar --default \
@@ -98,14 +98,17 @@ sketchybar --add item clock right \
 
 sketchybar --add item volume right \
   --set volume script="$PLUGIN_DIR/volume.sh" \
+  click_script="$PLUGIN_DIR/volume.sh toggle volume" \
   --subscribe volume volume_change
 
 sketchybar --add item battery right \
   --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+  click_script="$PLUGIN_DIR/battery.sh toggle battery" \
   --subscribe battery system_woke power_source_change
 
 sketchybar --add item net right \
-  --set net update_freq=120 icon=􀙇 script="$PLUGIN_DIR/wifi.sh"
+  --set net update_freq=120 icon=􀙇 script="$PLUGIN_DIR/wifi.sh" \
+  click_script="$PLUGIN_DIR/wifi.sh toggle net"
 
 # === RIGHT COMPARTMENT ===
 sketchybar --add bracket right_compartment clock volume battery net \

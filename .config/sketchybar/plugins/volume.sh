@@ -1,11 +1,24 @@
 #!/bin/sh
 
-# The volume_change event supplies a $INFO variable in which the current volume
-# percentage is passed to the script.
+# Clicking the item toggles the output mute state.
+case "$1" in
+toggle)
+  NAME="${2:-$NAME}"
+  if [ "$(osascript -e 'output muted of (get volume settings)')" = "true" ]; then
+    osascript -e 'set volume output muted false'
+  else
+    osascript -e 'set volume output muted true'
+  fi
+  ;;
+esac
 
-if [ "$SENDER" = "volume_change" ]; then
-  VOLUME="$INFO"
+VOLUME="$(osascript -e 'output volume of (get volume settings)')"
+MUTED="$(osascript -e 'output muted of (get volume settings)')"
 
+if [ "$MUTED" = "true" ]; then
+  ICON="􀊣"
+  LABEL="Muted"
+else
   case "$VOLUME" in
   [6-9][0-9] | 100)
     ICON="􀊩"
@@ -18,6 +31,7 @@ if [ "$SENDER" = "volume_change" ]; then
     ;;
   *) ICON="􀊣" ;;
   esac
-
-  sketchybar --set "$NAME" icon="$ICON" label="$VOLUME%"
+  LABEL="$VOLUME%"
 fi
+
+sketchybar --set "$NAME" icon="$ICON" label="$LABEL"
